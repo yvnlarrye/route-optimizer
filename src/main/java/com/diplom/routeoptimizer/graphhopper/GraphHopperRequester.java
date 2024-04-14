@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface GraphHopperRequester {
-    Map<MatrixType, double[][]> getMatrices(List<MapPoint> points, List<MatrixType> matrixTypes) throws IOException;
+    String getMatrices(List<MapPoint> points, List<MatrixType> matrixTypes)
+            throws IOException, InterruptedException;
 
 }

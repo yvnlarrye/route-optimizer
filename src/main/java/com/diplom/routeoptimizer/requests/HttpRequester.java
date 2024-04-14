@@ -1,5 +1,6 @@
 package com.diplom.routeoptimizer.requests;
 
+import org.apache.http.client.utils.URIBuilder;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -15,8 +16,7 @@ public class HttpRequester implements Requester {
     @Override
     public HttpResponse<String> doGet(String url,
                         Map<String, String> queryParams) throws IOException, InterruptedException {
-        String formattedParams = ParameterStringBuilder.getParamsString(queryParams);
-        return doGet(url + "?" + formattedParams);
+        return doGet(url + "?" + ParameterStringBuilder.getParamsString(queryParams));
     }
 
     @Override
@@ -30,13 +30,12 @@ public class HttpRequester implements Requester {
     }
 
     @Override
-    public HttpResponse<String> doPost(String url, Map<String, Object> requestBody) throws IOException, InterruptedException {
-
+    public HttpResponse<String> doPost(String url, String requestBody) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
-                .POST(HttpRequest.BodyPublishers.ofString("")).build();
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
-
 }

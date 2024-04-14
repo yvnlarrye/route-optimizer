@@ -4,7 +4,7 @@ public enum MatrixType {
 
     DISTANCES("distances"), TIMES("times"), WEIGHTS("weights");
 
-    String name;
+    final String name;
 
     MatrixType(String name) {
         this.name = name;

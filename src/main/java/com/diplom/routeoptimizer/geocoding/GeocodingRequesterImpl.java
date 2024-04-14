@@ -3,10 +3,8 @@ package com.diplom.routeoptimizer.geocoding;
 import com.diplom.routeoptimizer.config.GeocodingConfig;
 import com.diplom.routeoptimizer.model.UniversalAddress;
 import com.diplom.routeoptimizer.model.MapPoint;
-import com.diplom.routeoptimizer.requests.HttpRequester;
+import com.diplom.routeoptimizer.requests.Requester;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,7 @@ public class GeocodingRequesterImpl implements GeocodingRequester {
     private GeocodingParser parser;
 
     @Autowired
-    private HttpRequester requester;
+    private Requester requester;
 
     @Override
     public String encodeAddressToCoordinates(Addressable address) throws IOException, InterruptedException {
@@ -42,11 +40,11 @@ public class GeocodingRequesterImpl implements GeocodingRequester {
         params.put("country", universalAddress.getCountry());
 
         HttpResponse<String> response = requester.doGet(config.getUrl(), params);
-        int statusCode = 0;
+        int statusCode;
         if ((statusCode = response.statusCode()) <= 299) {
             log.info(String.format("Geocoding request was sent with status %d", statusCode));
         } else {
-            log.error(String.format("Request failed with status code %d", statusCode));
+            log.error(String.format("Geocoding request failed with status code %d", statusCode));
         }
 
         MapPoint point = parser.parse(response.body());
