@@ -15,7 +15,7 @@ public class HttpRequester implements Requester {
 
     @Override
     public HttpResponse<String> doGet(String url,
-                        Map<String, String> queryParams) throws IOException, InterruptedException {
+                                      Map<String, String> queryParams) throws IOException, InterruptedException {
         return doGet(url + "?" + ParameterStringBuilder.getParamsString(queryParams));
     }
 
@@ -25,7 +25,6 @@ public class HttpRequester implements Requester {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .GET().build();
-
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 

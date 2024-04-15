@@ -1,32 +1,38 @@
 package com.diplom.routeoptimizer.optimizer.dijkstra;
 
-import lombok.Data;
+import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.model.MapPoint;
 
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-@Data
+
 public class Node {
-    private String name;
+
+    private MapPoint point;
 
     private List<Node> shortestPath = new LinkedList<>();
 
-    private Integer distance = Integer.MAX_VALUE;
+    private Double distance = Double.MAX_VALUE;
 
-    Map<Node, Integer> adjacentNodes = new HashMap<>();
+    Map<Node, Double> adjacentNodes = new HashMap<>();
 
-    public void addDestination(Node destination, int distance) {
+    public void addDestination(Node destination, double distance) {
         adjacentNodes.put(destination, distance);
     }
 
-    public Node(String name) {
-        this.name = name;
+    public Node(MapPoint point) {
+        this.point = point;
     }
 
-    public String getName() {
-        return name;
+    public MapPoint getPoint() {
+        return point;
+    }
+
+    public void setPoint(MapPoint point) {
+        this.point = point;
     }
 
     public List<Node> getShortestPath() {
@@ -37,15 +43,15 @@ public class Node {
         this.shortestPath = shortestPath;
     }
 
-    public Integer getDistance() {
+    public Double getDistance() {
         return distance;
     }
 
-    public void setDistance(Integer distance) {
+    public void setDistance(Double distance) {
         this.distance = distance;
     }
 
-    public Map<Node, Integer> getAdjacentNodes() {
+    public Map<Node, Double> getAdjacentNodes() {
         return adjacentNodes;
     }
 }

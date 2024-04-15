@@ -4,18 +4,18 @@ import java.util.*;
 
 public class Dijkstra {
     public static void calculateShortestPathFromSource(Node source) {
-        source.setDistance(0);
+        source.setDistance(0.0);
 
         Set<Node> settledNodes = new HashSet<>();
         Set<Node> unsettledNodes = new HashSet<>();
 
         unsettledNodes.add(source);
-        while (unsettledNodes.size() != 0) {
+        while (!unsettledNodes.isEmpty()) {
             Node currentNode = getLowestDistanceNode(unsettledNodes);
             unsettledNodes.remove(currentNode);
-            for (Map.Entry<Node, Integer> adjacencyPair : currentNode.getAdjacentNodes().entrySet()) {
+            for (Map.Entry<Node, Double> adjacencyPair : currentNode.getAdjacentNodes().entrySet()) {
                 Node adjacentNode = adjacencyPair.getKey();
-                Integer edgeWeight = adjacencyPair.getValue();
+                Double edgeWeight = adjacencyPair.getValue();
                 if (!settledNodes.contains(adjacentNode)) {
                     calculateMinimumDistance(adjacentNode, edgeWeight, currentNode);
                     unsettledNodes.add(adjacentNode);
@@ -26,8 +26,8 @@ public class Dijkstra {
     }
 
     private static void calculateMinimumDistance(Node evaluationNode,
-                                                 Integer edgeWeight, Node sourceNode) {
-        Integer sourceDistance = sourceNode.getDistance();
+                                                 Double edgeWeight, Node sourceNode) {
+        Double sourceDistance = sourceNode.getDistance();
         if (sourceDistance + edgeWeight < evaluationNode.getDistance()) {
             evaluationNode.setDistance(sourceDistance + edgeWeight);
             LinkedList<Node> shortestPath = new LinkedList<>(sourceNode.getShortestPath());
@@ -38,9 +38,9 @@ public class Dijkstra {
 
     private static Node getLowestDistanceNode(Set<Node> unsettledNodes) {
         Node lowestDistanceNode = null;
-        int lowestDistance = Integer.MAX_VALUE;
+        double lowestDistance = Double.MAX_VALUE;
         for (Node node : unsettledNodes) {
-            int nodeDistance = node.getDistance();
+            double nodeDistance = node.getDistance();
             if (nodeDistance < lowestDistance) {
                 lowestDistance = nodeDistance;
                 lowestDistanceNode = node;

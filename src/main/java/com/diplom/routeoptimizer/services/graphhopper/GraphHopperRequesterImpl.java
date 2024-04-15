@@ -1,12 +1,11 @@
-package com.diplom.routeoptimizer.graphhopper;
+package com.diplom.routeoptimizer.services.graphhopper;
 
 import com.diplom.routeoptimizer.config.GraphHopperConfig;
-import com.diplom.routeoptimizer.model.MapPoint;
+import com.diplom.routeoptimizer.model.Location;
 import com.diplom.routeoptimizer.model.MatrixType;
 import com.diplom.routeoptimizer.requests.ParameterStringBuilder;
 import com.diplom.routeoptimizer.requests.Requester;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,15 +27,15 @@ public class GraphHopperRequesterImpl implements GraphHopperRequester {
     @Autowired
     private Requester requester;
 
-    private JSONObject buildMatrixRequestBody(List<MapPoint> points, List<MatrixType> matrixTypes) {
+    private JSONObject buildMatrixRequestBody(List<Location> locations, List<MatrixType> matrixTypes) {
         JSONObject requestBody = new JSONObject();
 
         JSONArray pointsArray = new JSONArray();
-        for (MapPoint point : points) {
-            JSONArray currentPoint = new JSONArray();
-            currentPoint.put(point.getLatitude());
-            currentPoint.put(point.getLongitude());
-            pointsArray.put(currentPoint);
+        for (Location location : locations) {
+            JSONArray currentLocation = new JSONArray();
+            currentLocation.put(location.getLatitude());
+            currentLocation.put(location.getLongitude());
+            pointsArray.put(currentLocation);
         }
 
         JSONArray matrixTypesArr = new JSONArray();
@@ -51,12 +50,12 @@ public class GraphHopperRequesterImpl implements GraphHopperRequester {
     }
 
     @Override
-    public String getMatrices(List<MapPoint> points, List<MatrixType> matrixTypes) throws IOException, InterruptedException {
+    public String getMatrices(List<Location> locations, List<MatrixType> matrixTypes) throws IOException, InterruptedException {
         Map<String, String> params = new HashMap<>();
         params.put("key", config.getSecret());
         String formattedParams = ParameterStringBuilder.getParamsString(params);
 
-        JSONObject requestBody = buildMatrixRequestBody(points, matrixTypes);
+        JSONObject requestBody = buildMatrixRequestBody(locations, matrixTypes);
 
         String endpoint = config.getUrl() + "?" + formattedParams;
         HttpResponse<String> response = requester.doPost(endpoint, requestBody.toString());

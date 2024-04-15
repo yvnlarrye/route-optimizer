@@ -1,4 +1,4 @@
-package com.diplom.routeoptimizer;
+package com.diplom.routeoptimizer.controllers;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,22 +1,14 @@
 package com.diplom.routeoptimizer.model;
 
-import lombok.AllArgsConstructor;
+import com.diplom.routeoptimizer.services.geocoding.Addressable;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+
+@Data
+@RequiredArgsConstructor
 public class MapPoint {
-    private double latitude;
-    private double longitude;
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
-    @Override
-    public String toString() {
-        return String.format("lat: %f, lon: %f", latitude, longitude);
-    }
+    private final Location location;
+    private final Addressable address;
 }
+

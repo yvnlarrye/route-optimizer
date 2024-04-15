@@ -1,6 +1,6 @@
-package com.diplom.routeoptimizer.geocoding;
+package com.diplom.routeoptimizer.services.geocoding;
 
-import com.diplom.routeoptimizer.model.MapPoint;
+import com.diplom.routeoptimizer.model.Location;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -8,13 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class CoordinatesParser implements GeocodingParser {
     @Override
-    public MapPoint parse(String json) {
+    public Location parse(String json) {
         JSONArray jsonArray = new JSONArray(json);
         JSONObject jsonObject = jsonArray.getJSONObject(0);
 
         String lat = jsonObject.getString("lat");
         String lon = jsonObject.getString("lon");
 
-        return new MapPoint(Double.parseDouble(lat), Double.parseDouble(lon));
+        return new Location(Double.parseDouble(lat), Double.parseDouble(lon));
     }
 }

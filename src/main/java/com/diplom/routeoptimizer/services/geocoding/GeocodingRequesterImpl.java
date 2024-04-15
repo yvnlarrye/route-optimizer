@@ -1,8 +1,8 @@
-package com.diplom.routeoptimizer.geocoding;
+package com.diplom.routeoptimizer.services.geocoding;
 
 import com.diplom.routeoptimizer.config.GeocodingConfig;
 import com.diplom.routeoptimizer.model.UniversalAddress;
-import com.diplom.routeoptimizer.model.MapPoint;
+import com.diplom.routeoptimizer.model.Location;
 import com.diplom.routeoptimizer.requests.Requester;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -39,19 +39,20 @@ public class GeocodingRequesterImpl implements GeocodingRequester {
         params.put("city", universalAddress.getCity());
         params.put("country", universalAddress.getCountry());
 
+        JSONObject resultJSON = new JSONObject();
         HttpResponse<String> response = requester.doGet(config.getUrl(), params);
         int statusCode;
         if ((statusCode = response.statusCode()) <= 299) {
             log.info(String.format("Geocoding request was sent with status %d", statusCode));
         } else {
-            log.error(String.format("Geocoding request failed with status code %d", statusCode));
+            log.error(String.format("Geocoding request was sent, but server responded with status code %d", statusCode));
         }
 
-        MapPoint point = parser.parse(response.body());
+        Location point = parser.parse(response.body());
 
-        JSONObject resultJSON = new JSONObject();
-        resultJSON.append("lat", point.getLatitude());
-        resultJSON.append("lot", point.getLongitude());
+        resultJSON.put("status", "ok");
+        resultJSON.put("lat", point.getLatitude());
+        resultJSON.put("lot", point.getLongitude());
 
         return resultJSON.toString();
     }

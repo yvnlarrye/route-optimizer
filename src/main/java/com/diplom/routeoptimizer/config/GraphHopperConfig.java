@@ -11,3 +11,5 @@ public class GraphHopperConfig {
     private String url;
     private String secret;
 }
+
+

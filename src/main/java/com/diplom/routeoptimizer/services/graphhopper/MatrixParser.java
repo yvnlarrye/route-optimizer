@@ -1,4 +1,4 @@
-package com.diplom.routeoptimizer.graphhopper;
+package com.diplom.routeoptimizer.services.graphhopper;
 
 import com.diplom.routeoptimizer.model.MatrixType;
 import org.json.JSONArray;
