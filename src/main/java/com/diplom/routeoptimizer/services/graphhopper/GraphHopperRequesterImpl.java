@@ -5,6 +5,7 @@ import com.diplom.routeoptimizer.model.Location;
 import com.diplom.routeoptimizer.model.MatrixType;
 import com.diplom.routeoptimizer.requests.ParameterStringBuilder;
 import com.diplom.routeoptimizer.requests.Requester;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -19,13 +20,11 @@ import java.util.Map;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class GraphHopperRequesterImpl implements GraphHopperRequester {
 
-    @Autowired
-    private GraphHopperConfig config;
-
-    @Autowired
-    private Requester requester;
+    private final GraphHopperConfig config;
+    private final Requester requester;
 
     private JSONObject buildMatrixRequestBody(List<Location> locations, List<MatrixType> matrixTypes) {
         JSONObject requestBody = new JSONObject();
@@ -33,8 +32,8 @@ public class GraphHopperRequesterImpl implements GraphHopperRequester {
         JSONArray pointsArray = new JSONArray();
         for (Location location : locations) {
             JSONArray currentLocation = new JSONArray();
-            currentLocation.put(location.getLatitude());
             currentLocation.put(location.getLongitude());
+            currentLocation.put(location.getLatitude());
             pointsArray.put(currentLocation);
         }
 
@@ -50,7 +49,8 @@ public class GraphHopperRequesterImpl implements GraphHopperRequester {
     }
 
     @Override
-    public String getMatrices(List<Location> locations, List<MatrixType> matrixTypes) throws IOException, InterruptedException {
+    public String getMatrices(List<Location> locations, List<MatrixType> matrixTypes)
+                        throws IOException, InterruptedException {
         Map<String, String> params = new HashMap<>();
         params.put("key", config.getSecret());
         String formattedParams = ParameterStringBuilder.getParamsString(params);
@@ -58,6 +58,7 @@ public class GraphHopperRequesterImpl implements GraphHopperRequester {
         JSONObject requestBody = buildMatrixRequestBody(locations, matrixTypes);
 
         String endpoint = config.getUrl() + "?" + formattedParams;
+
         HttpResponse<String> response = requester.doPost(endpoint, requestBody.toString());
 
         int statusCode;

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CoordinatesParser implements GeocodingParser {
+public class LocationParser implements GeocodingParser {
     @Override
     public Location parse(String json) {
         JSONArray jsonArray = new JSONArray(json);

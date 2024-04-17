@@ -1,8 +1,8 @@
 package com.diplom.routeoptimizer.optimizer.dijkstra;
 
-import com.diplom.routeoptimizer.model.Location;
 import com.diplom.routeoptimizer.model.MapPoint;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +15,11 @@ public class Node {
 
     private List<Node> shortestPath = new LinkedList<>();
 
-    private Double distance = Double.MAX_VALUE;
+    private BigDecimal distance = BigDecimal.valueOf(Double.MAX_VALUE);
 
-    Map<Node, Double> adjacentNodes = new HashMap<>();
+    Map<Node, BigDecimal> adjacentNodes = new HashMap<>();
 
-    public void addDestination(Node destination, double distance) {
+    public void addDestination(Node destination, BigDecimal distance) {
         adjacentNodes.put(destination, distance);
     }
 
@@ -31,10 +31,6 @@ public class Node {
         return point;
     }
 
-    public void setPoint(MapPoint point) {
-        this.point = point;
-    }
-
     public List<Node> getShortestPath() {
         return shortestPath;
     }
@@ -43,15 +39,15 @@ public class Node {
         this.shortestPath = shortestPath;
     }
 
-    public Double getDistance() {
+    public BigDecimal getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(BigDecimal distance) {
         this.distance = distance;
     }
 
-    public Map<Node, Double> getAdjacentNodes() {
+    public Map<Node, BigDecimal> getAdjacentNodes() {
         return adjacentNodes;
     }
 }

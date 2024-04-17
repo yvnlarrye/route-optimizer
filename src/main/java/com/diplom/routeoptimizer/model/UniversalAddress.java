@@ -11,4 +11,14 @@ public class UniversalAddress implements Addressable {
     private String city;
     private String street;
     private String houseNumber;
+
+    @Override
+    public String toString() {
+        return "UniversalAddress{" +
+                "country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", street='" + street + '\'' +
+                ", houseNumber='" + houseNumber + '\'' +
+                '}';
+    }
 }
