@@ -6,11 +6,11 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class Location {
-    private double latitude;
-    private double longitude;
+    private double lat;
+    private double lon;
 
     @Override
     public String toString() {
-        return String.format("lat: %f, lon: %f", latitude, longitude);
+        return String.format("lat: %f, lon: %f", lat, lon);
     }
 }

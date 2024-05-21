@@ -2,6 +2,7 @@ package com.diplom.routeoptimizer.requests;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
@@ -12,12 +13,6 @@ import java.util.Map;
 
 @Component
 public class HttpRequester implements Requester {
-
-    @Override
-    public HttpResponse<String> doGet(String url,
-                                      Map<String, String> queryParams) throws IOException, InterruptedException {
-        return doGet(url + "?" + ParameterStringBuilder.getParamsString(queryParams));
-    }
 
     @Override
     public HttpResponse<String> doGet(String url) throws IOException, InterruptedException {
@@ -31,6 +26,7 @@ public class HttpRequester implements Requester {
     @Override
     public HttpResponse<String> doPost(String url, String requestBody) throws IOException, InterruptedException {
         HttpClient client = HttpClient.newHttpClient();
+        RestTemplate restTemplate = new RestTemplate();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
                 .header("Content-Type", "application/json")

@@ -1,25 +1,15 @@
 package com.diplom.routeoptimizer.controllers;
 
 import com.diplom.routeoptimizer.dto.AddressesDTO;
-import com.diplom.routeoptimizer.dto.OptimizedRoute;
-import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
-import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
-import com.diplom.routeoptimizer.exceptions.MatrixBuildingException;
-import com.diplom.routeoptimizer.services.RouteOptimizerService;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.diplom.routeoptimizer.services.geocoding.GeocodingRequester;
-import com.diplom.routeoptimizer.services.graphhopper.GraphHopperRequester;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-import com.diplom.routeoptimizer.services.geocoding.Addressable;
-import com.diplom.routeoptimizer.services.graphhopper.MatrixParser;
+import com.diplom.routeoptimizer.dto.RouteDetailsRequest;
 import com.diplom.routeoptimizer.model.Location;
-import com.diplom.routeoptimizer.model.MatrixType;
-import com.diplom.routeoptimizer.model.MapPoint;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.diplom.routeoptimizer.services.RouteOptimizerService;
+import com.diplom.routeoptimizer.services.geocoding.GeocodingRequester;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,44 +18,19 @@ import java.util.List;
 public class GeocodingController {
 
     private final GeocodingRequester geocodingRequester;
-    private final GraphHopperRequester graphHopperRequester;
     private final RouteOptimizerService routeOptimizerService;
 
     @ResponseBody
     @PostMapping("/optimize")
-    public OptimizedRoute geocoding(@RequestBody AddressesDTO addressesDTO)
-            throws MatrixBuildingException, InvalidNumberOfAddressesException, EncodingAddressException, JsonProcessingException {
-        return new OptimizedRoute(routeOptimizerService.optimizeRoute(addressesDTO.getAddresses()));
-    }
+    public ResponseEntity<?> geocoding(@RequestBody AddressesDTO addressesDTO)
+            throws IOException, InterruptedException {
+        List<Location> routeLocations = routeOptimizerService
+                            .getRouteLocations(addressesDTO.getAddresses());
 
-//    @GetMapping("/matrix")
-//    public String matrix() throws IOException, InterruptedException {
-//        List<MatrixType> matrixTypes = new ArrayList<>();
-//        matrixTypes.add(MatrixType.DISTANCES);
-//        matrixTypes.add(MatrixType.TIMES);
-//        matrixTypes.add(MatrixType.WEIGHTS);
-//
-//        List<Location> points = new ArrayList<>();
-//        points.add(new Location(-0.11379003524780275, 51.53664617804063));
-//        points.add(new Location(-0.10866165161132814, 51.538621486960956));
-//        points.add(new Location(-0.11059284210205078, 51.53245503603458));
-//
-//        String matricesResponse = graphHopperRequester.getMatrices(points, matrixTypes);
-//
-//        Object[][] distances = MatrixParser.parseMatrix(matricesResponse, MatrixType.WEIGHTS);
-//        StringBuilder sb = new StringBuilder();
-//        for (int i = 0; i < distances.length; i++) {
-//            sb.append("[");
-//            for (int j = 0; j < distances[i].length; j++) {
-//                sb.append(distances[i][j]);
-//                if (j != distances[i].length - 1) {
-//                    sb.append(", ");
-//                }
-//            }
-//            sb.append("]\n");
-//        }
-//        return sb.toString();
-//    }
+        RouteDetailsRequest request = new RouteDetailsRequest(routeLocations);
+
+        return routeOptimizerService.optimize(request);
+    }
 
 }
 
