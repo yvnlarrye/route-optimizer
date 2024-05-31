@@ -10,27 +10,22 @@ import com.google.protobuf.Duration;
 import lombok.Builder;
 import lombok.Data;
 
-import java.util.logging.Logger;
-
 public final class VrpCapacity {
-    private static final Logger logger = Logger.getLogger(VrpCapacity.class.getName());
 
     @Builder
     @Data
     static class DataModel {
         private Long[][] distanceMatrix;
 
-        public int[] demands = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        //        public final long[] demands = {0, 1, 5, 2, 4, 2, 4, 3, 3, 1};
-        public long[] vehicleCapacities = {2, 2, 2, 2, 2, 2};
-        //        public final long[] vehicleCapacities = {15, 15, 15, 15, 15, 15};
-        public int vehicleNumber = 6;
-        public int depot = 0;
+        public int[] demands;
+        public long[] vehicleCapacities;
+        public int vehicleNumber;
+        public int depot;
 
     }
 
     private static VrpSolution formatSolution(DataModel data, RoutingModel routing,
-                                           RoutingIndexManager manager, Assignment solution) {
+                                              RoutingIndexManager manager, Assignment solution) {
         long totalDistance = 0;
         long totalLoad = 0;
         VrpSolution vrpSolution = new VrpSolution();

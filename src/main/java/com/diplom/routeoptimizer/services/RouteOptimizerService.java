@@ -1,7 +1,8 @@
 package com.diplom.routeoptimizer.services;
 
 import com.diplom.routeoptimizer.dto.RouteDetailsRequest;
-import com.diplom.routeoptimizer.dto.RouteDetailsResponse;
+import com.diplom.routeoptimizer.dto.vrp.CvrpRequest;
+import com.diplom.routeoptimizer.dto.vrp.TspRequest;
 import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
 import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
 import com.diplom.routeoptimizer.model.Location;
@@ -14,6 +15,8 @@ public interface RouteOptimizerService {
     List<Location> getRouteLocations(List<UniversalAddress> addresses)
             throws EncodingAddressException, InvalidNumberOfAddressesException;
 
-    ResponseEntity<RouteDetailsResponse> routeDetails(RouteDetailsRequest body);
-    ResponseEntity<?> optimize(RouteDetailsRequest request);
+    ResponseEntity<?> optimizeCvrp(CvrpRequest cvrpRequest)
+            throws InvalidNumberOfAddressesException, EncodingAddressException;
+
+    ResponseEntity<?> optimizeTsp(TspRequest request) throws InvalidNumberOfAddressesException, EncodingAddressException;
 }

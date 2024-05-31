@@ -2,6 +2,8 @@ package com.diplom.routeoptimizer.services;
 
 import com.diplom.routeoptimizer.dto.RouteDetailsRequest;
 import com.diplom.routeoptimizer.dto.RouteDetailsResponse;
+import com.diplom.routeoptimizer.dto.vrp.CvrpRequest;
+import com.diplom.routeoptimizer.dto.vrp.TspRequest;
 import com.diplom.routeoptimizer.dto.vrp.VrpSolution;
 import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
 import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
@@ -17,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -36,16 +37,39 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
         return gis2Requester.getRouteDetails(body);
     }
 
-    public ResponseEntity<?> optimize(RouteDetailsRequest request) {
+    @Override
+    public ResponseEntity<?> optimizeCvrp(CvrpRequest cvrpRequest)
+            throws InvalidNumberOfAddressesException, EncodingAddressException {
+
+        List<Location> routeLocations = getRouteLocations(cvrpRequest.getAddresses());
+        RouteDetailsRequest request = new RouteDetailsRequest(routeLocations);
+
         ResponseEntity<RouteDetailsResponse> responseEntity = routeDetails(request);
         Long[][] distanceMatrix = matrixParser.getDistanceMatrix(responseEntity);
 
-        int vehicleNumber = 4;
-        long[] vehicleCapacities = {3, 3, 3, 3};
-        int[] demands = {0, 1, 1, 1, 1, 1, 1, 1, 1, 1};
-        int depot = 0;
+        int vehicleNumber = cvrpRequest.getVehicleNumber();
+        long[] vehicleCapacities = cvrpRequest.getVehicleCapacities().stream().mapToLong(Long::longValue).toArray();
+        int[] demands = cvrpRequest.getDemands().stream().mapToInt(Integer::intValue).toArray();
+        int depot = cvrpRequest.getDepot();
         VrpSolution solution = VrpCapacity.solveProblem(
                 distanceMatrix, vehicleNumber, demands, vehicleCapacities, depot);
+
+        return ResponseEntity.ok(solution);
+    }
+
+    @Override
+    public ResponseEntity<?> optimizeTsp(TspRequest tspRequest)
+            throws InvalidNumberOfAddressesException, EncodingAddressException {
+        List<Location> routeLocations = getRouteLocations(tspRequest.getAddresses());
+
+        RouteDetailsRequest request = new RouteDetailsRequest(routeLocations);
+        ResponseEntity<RouteDetailsResponse> responseEntity = routeDetails(request);
+        Long[][] distanceMatrix = matrixParser.getDistanceMatrix(responseEntity);
+
+        int[] demands = IntStream.generate(() -> 1).limit(distanceMatrix.length).toArray();
+        long[] vehicleCapacities = {Long.MAX_VALUE};
+        VrpSolution solution = VrpCapacity.solveProblem(
+                distanceMatrix, 1, demands, vehicleCapacities, 0);
 
         return ResponseEntity.ok(solution);
     }
