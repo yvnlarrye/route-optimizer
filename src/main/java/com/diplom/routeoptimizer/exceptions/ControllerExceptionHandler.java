@@ -13,6 +13,7 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class ControllerExceptionHandler {
+
     @ExceptionHandler(SolutionNotFoundException.class)
     public ResponseEntity<?> solutionNotFound(SolutionNotFoundException e) {
         e.printStackTrace(System.out);
