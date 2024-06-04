@@ -21,18 +21,18 @@ public class UserService {
         return repository.existsByUsername(email);
     }
 
-    public User getByEmail(String email) {
-        return repository.findByUsername(email)
+    public User getByUsername(String username) {
+        return repository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
     public UserDetailsService userDetailsService() {
-        return this::getByEmail;
+        return this::getByUsername;
     }
 
     public User getCurrentUser() {
-        var email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return getByEmail(email);
+        var username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return getByUsername(username);
     }
 
     public void deleteUser(Long id) {

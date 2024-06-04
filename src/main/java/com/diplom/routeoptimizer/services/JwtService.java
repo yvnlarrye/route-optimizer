@@ -1,11 +1,15 @@
 package com.diplom.routeoptimizer.services;
 
+import com.diplom.routeoptimizer.exceptions.TokensNotFoundException;
+import com.diplom.routeoptimizer.model.Token;
 import com.diplom.routeoptimizer.model.User;
+import com.diplom.routeoptimizer.repository.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -22,6 +27,39 @@ public class JwtService {
     @Value("${token.signing.key}")
     private String jwtSigningKey;
 
+    private final TokenRepository tokenRepository;
+
+    @Autowired
+    public JwtService(TokenRepository tokenRepository) {
+        this.tokenRepository = tokenRepository;
+    }
+
+    private Token saveToken(Token token) {
+        return tokenRepository.save(token);
+    }
+
+    public Token createUserToken(User user, String jwt) {
+        Token token = new Token();
+        token.setToken(jwt);
+        token.setUser(user);
+        token.setRevoked(false);
+        return saveToken(token);
+    }
+
+    private List<Token> getUserTokens(User user) {
+        return tokenRepository.findAllByUser(user)
+                .orElseThrow(() ->
+                        new TokensNotFoundException("Cannot find tokens of user " + user.getId()));
+    }
+
+    public void revokeAllUserTokens(User user) {
+        List<Token> userTokens = getUserTokens(user);
+        if (!userTokens.isEmpty()) {
+            userTokens.forEach(token -> token.setRevoked(true));
+        }
+        tokenRepository.saveAll(userTokens);
+    }
+
     public String extractUserName(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -30,14 +68,18 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         if (userDetails instanceof User customUserDetails) {
             claims.put("id", customUserDetails.getId());
-            claims.put("email", customUserDetails.getUsername());
+            claims.put("username", customUserDetails.getUsername());
         }
         return generateToken(claims, userDetails);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userName = extractUserName(token);
-        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token);
+
+        boolean isTokenValid = tokenRepository.findByToken(token)
+                .map(t -> !t.isRevoked()).orElse(false);
+
+        return (userName.equals(userDetails.getUsername())) && !isTokenExpired(token) && isTokenValid;
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {

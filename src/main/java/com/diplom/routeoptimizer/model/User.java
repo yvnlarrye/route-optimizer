@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Data
 @Entity
@@ -29,6 +30,10 @@ public class User implements UserDetails {
     @JsonIgnore
     @NotNull
     private String password;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Token> tokens;
 
     public User(String username, String password) {
         this.username = username;

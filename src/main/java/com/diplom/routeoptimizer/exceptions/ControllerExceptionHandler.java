@@ -3,12 +3,12 @@ package com.diplom.routeoptimizer.exceptions;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -30,12 +30,34 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
-    @ExceptionHandler(InvalidSignInDataException.class)
-    public ResponseEntity<?> invalidSignInDataExceptionHandler(InvalidSignInDataException ex) {
+    @ExceptionHandler(InvalidAuthDataException.class)
+    public ResponseEntity<?> invalidAuthDataExceptionHandler(InvalidAuthDataException ex) {
+
         List<String> errors = List.of(ex.getMessage());
         Map<String, List<String>> response = new HashMap<>();
         response.put("errors", errors);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> authValidationConstraintHandler(MethodArgumentNotValidException ex) {
+
+        Object[] errMessageArr = ex.getDetailMessageArguments();
+        if (errMessageArr == null) {
+            throw new InvalidAuthDataException("Неизвестная ошибка аутентификации. Попробуйте ввести другие данные");
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        List<String> errors = new ArrayList<>();
+
+        String errMessage = (String) errMessageArr[1];
+        for (String unformattedError : errMessage.split(", and ")) {
+            String formattedError = unformattedError.split(": ")[1].strip();
+            errors.add(formattedError);
+        }
+
+        response.put("errors", errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }

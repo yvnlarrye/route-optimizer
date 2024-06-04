@@ -30,6 +30,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserService userService;
+    private final static String API_VERSION = "api/v1";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,13 +44,14 @@ public class SecurityConfiguration {
                     return corsConfiguration;
                 }))
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/v1/auth/**", "/sign-up", "/sign-in").anonymous()
-                        .anyRequest().authenticated())
+                        .requestMatchers(API_VERSION + "/auth/logout").authenticated()
+                        .requestMatchers(API_VERSION + "/auth/sign-in", API_VERSION + "/auth/sign-up").anonymous()
+                        .anyRequest().authenticated()
+                )
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
-
     }
 
     @Bean

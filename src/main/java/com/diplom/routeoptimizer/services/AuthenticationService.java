@@ -3,7 +3,7 @@ package com.diplom.routeoptimizer.services;
 import com.diplom.routeoptimizer.dto.JwtAuthenticationResponse;
 import com.diplom.routeoptimizer.dto.SignInRequest;
 import com.diplom.routeoptimizer.dto.SignUpRequest;
-import com.diplom.routeoptimizer.exceptions.InvalidSignInDataException;
+import com.diplom.routeoptimizer.exceptions.InvalidAuthDataException;
 import com.diplom.routeoptimizer.exceptions.UserAlreadyExistsException;
 import com.diplom.routeoptimizer.model.User;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class AuthenticationService {
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
 
         if (userService.isUserExists(request.getUsername())) {
-            throw new UserAlreadyExistsException("Пользователь с таким email уже существует");
+            throw new UserAlreadyExistsException("Пользователь с таким именем уже существует");
         }
 
         User user = userService.create(new User(
@@ -33,23 +33,32 @@ public class AuthenticationService {
         ));
 
         var jwt = jwtService.generateToken(user);
+        jwtService.createUserToken(user, jwt);
+
         return new JwtAuthenticationResponse(jwt);
     }
 
-    public JwtAuthenticationResponse signIn(SignInRequest request) throws InvalidSignInDataException {
+    public JwtAuthenticationResponse signIn(SignInRequest request) throws InvalidAuthDataException {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                     request.getUsername(),
                     request.getPassword()
             ));
-            var userDetails = userService
-                    .userDetailsService()
-                    .loadUserByUsername(request.getUsername());
 
-            var jwt = jwtService.generateToken(userDetails);
+            User user = userService.getByUsername(request.getUsername());
+            var jwt = jwtService.generateToken(user);
+
+            jwtService.revokeAllUserTokens(user);
+            jwtService.createUserToken(user, jwt);
+
             return new JwtAuthenticationResponse(jwt);
         } catch (Exception e) {
-            throw new InvalidSignInDataException("Неверное имя пользователя или пароль");
+            throw new InvalidAuthDataException("Неверное имя пользователя или пароль");
         }
+    }
+
+    public void logout() {
+        var user = userService.getCurrentUser();
+        jwtService.revokeAllUserTokens(user);
     }
 }
