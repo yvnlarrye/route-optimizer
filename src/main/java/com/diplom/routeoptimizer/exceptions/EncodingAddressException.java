@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.exceptions;
 
-import com.diplom.routeoptimizer.services.geocoding.Addressable;
+import com.diplom.routeoptimizer.services.geocoding.address.Addressable;
 
 import java.io.IOException;
 

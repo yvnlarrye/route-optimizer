@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.dto;
 
-import com.diplom.routeoptimizer.model.UniversalAddress;
+import com.diplom.routeoptimizer.services.geocoding.address.impl.OneStringAddress;
 import lombok.Data;
 
 
@@ -8,5 +8,5 @@ import java.util.List;
 
 @Data
 public class AddressesDTO {
-    private List<UniversalAddress> addresses;
+    private List<OneStringAddress> oneStringAddresses;
 }

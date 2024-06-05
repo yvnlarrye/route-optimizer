@@ -1,12 +1,13 @@
-package com.diplom.routeoptimizer.services.geocoding;
+package com.diplom.routeoptimizer.services.geocoding.parser.impl;
 
 import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.services.geocoding.parser.LocationParser;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-@Component
-public class LocationParser implements GeocodingParser {
+@Component("geocodingAPIParser")
+public class GeocodingAPILocationParser implements LocationParser {
     @Override
     public Location parse(String json) {
         JSONArray jsonArray = new JSONArray(json);

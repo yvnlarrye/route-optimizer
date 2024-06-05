@@ -8,8 +8,8 @@ import com.diplom.routeoptimizer.dto.vrp.VrpSolution;
 import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
 import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
 import com.diplom.routeoptimizer.model.Location;
-import com.diplom.routeoptimizer.model.UniversalAddress;
-import com.diplom.routeoptimizer.services.geocoding.GeocodingRequester;
+import com.diplom.routeoptimizer.services.geocoding.address.Addressable;
+import com.diplom.routeoptimizer.services.geocoding.requester.GeocodingRequester;
 import com.diplom.routeoptimizer.services.matrixparser.MatrixParser;
 import com.diplom.routeoptimizer.services.ortools.VrpCapacity;
 import com.diplom.routeoptimizer.services.routerequester.gis2.GIS2Requester;
@@ -31,7 +31,7 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
     private final MatrixParser<RouteDetailsResponse> matrixParser;
 
     private static final int MIN_NUMBER_OF_ADDRESSES = 3;
-    private static final int GEOCODING_REQUESTS_INTERVAL = 1050;
+    private static final int GEOCODING_REQUESTS_INTERVAL = 100;
 
     public ResponseEntity<RouteDetailsResponse> routeDetails(RouteDetailsRequest body) {
         return gis2Requester.getRouteDetails(body);
@@ -60,6 +60,9 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
     @Override
     public ResponseEntity<?> optimizeTsp(TspRequest tspRequest)
             throws InvalidNumberOfAddressesException, EncodingAddressException {
+
+        System.out.println(tspRequest);
+
         List<Location> routeLocations = getRouteLocations(tspRequest.getAddresses());
 
         RouteDetailsRequest request = new RouteDetailsRequest(routeLocations);
@@ -74,7 +77,7 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
         return ResponseEntity.ok(solution);
     }
 
-    public List<Location> getRouteLocations(List<UniversalAddress> addresses)
+    public List<Location> getRouteLocations(List<? extends Addressable> addresses)
             throws EncodingAddressException, InvalidNumberOfAddressesException {
 
         if (addresses.size() < MIN_NUMBER_OF_ADDRESSES) {
@@ -83,7 +86,7 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
 
         List<Location> locations = new ArrayList<>(MIN_NUMBER_OF_ADDRESSES);
 
-        for (UniversalAddress address : addresses) {
+        for (Addressable address : addresses) {
             try {
                 locations.add(geocodingRequester.getLocationFromAddress(address));
                 Thread.sleep(GEOCODING_REQUESTS_INTERVAL);

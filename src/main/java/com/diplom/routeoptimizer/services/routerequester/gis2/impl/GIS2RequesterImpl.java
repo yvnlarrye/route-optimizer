@@ -22,7 +22,7 @@ public class GIS2RequesterImpl implements GIS2Requester {
 
     @Autowired
     public GIS2RequesterImpl(RestTemplate restTemplate,
-                             @Value("${gis.url}") String URL,
+                             @Value("${gis.url.dist-matrix}") String URL,
                              @Value("${gis.api_key}") String API_KEY) {
         this.restTemplate = restTemplate;
         this.URL = URL;

@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.Map;
 
-public interface Requester {
+public interface HttpClient {
     HttpResponse<String> doGet(String url) throws IOException, InterruptedException;
 
     HttpResponse<String> doPost(String url, String requestBody)
