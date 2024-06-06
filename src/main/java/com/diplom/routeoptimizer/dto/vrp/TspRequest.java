@@ -8,6 +8,7 @@ import java.util.List;
 @Data
 public class TspRequest {
     private List<OneStringAddress> addresses;
+    private int depot;
 
     @Override
     public String toString() {
