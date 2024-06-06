@@ -61,8 +61,6 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
     public ResponseEntity<?> optimizeTsp(TspRequest tspRequest)
             throws InvalidNumberOfAddressesException, EncodingAddressException {
 
-        System.out.println(tspRequest);
-
         List<Location> routeLocations = getRouteLocations(tspRequest.getAddresses());
 
         RouteDetailsRequest request = new RouteDetailsRequest(routeLocations);
@@ -72,7 +70,7 @@ public class RouteOptimizerServiceImpl implements RouteOptimizerService {
         int[] demands = IntStream.generate(() -> 1).limit(distanceMatrix.length).toArray();
         long[] vehicleCapacities = {Long.MAX_VALUE};
         VrpSolution solution = VrpCapacity.solveProblem(
-                distanceMatrix, 1, demands, vehicleCapacities, 0);
+                distanceMatrix, 1, demands, vehicleCapacities, tspRequest.getDepot());
 
         return ResponseEntity.ok(solution);
     }
