@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.services.geocode.parser.impl;
 
-import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.services.geocode.Location;
 import com.diplom.routeoptimizer.services.geocode.parser.LocationParser;
 import org.json.JSONArray;
 import org.json.JSONObject;

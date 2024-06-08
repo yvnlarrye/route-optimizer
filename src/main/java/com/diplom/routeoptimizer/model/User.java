@@ -35,6 +35,11 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<Solution> solutions;
+
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;

@@ -1,5 +1,6 @@
 package com.diplom.routeoptimizer.exceptions;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,10 @@ public class ControllerExceptionHandler {
         response.put("errors", errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
+
+//    @ExceptionHandler(IncorrectSolutionFormatException.class)
+//    public ResponseEntity<?> handleIncorrectSolutionFormatException(IncorrectSolutionFormatException e) {
+//        return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//    }
 
 }

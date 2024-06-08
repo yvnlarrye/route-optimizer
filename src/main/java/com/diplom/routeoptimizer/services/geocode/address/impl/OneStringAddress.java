@@ -13,6 +13,8 @@ public class OneStringAddress implements Addressable {
     @JsonProperty("full_address")
     private String address;
 
+    private String type = "oneStringAddress";
+
     @Override
     public String oneStringAddress() {
         return address;

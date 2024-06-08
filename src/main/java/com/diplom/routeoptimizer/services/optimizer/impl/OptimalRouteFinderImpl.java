@@ -7,11 +7,10 @@ import com.diplom.routeoptimizer.dto.vrp.RoutingProblemData;
 import com.diplom.routeoptimizer.dto.vrp.TSPData;
 import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
 import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
-import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.services.geocode.Location;
 import com.diplom.routeoptimizer.services.geocode.address.Addressable;
 import com.diplom.routeoptimizer.services.geocode.geocoder.Geocoder;
 import com.diplom.routeoptimizer.services.matrix.parser.MatrixParser;
-import com.diplom.routeoptimizer.services.matrix.parser.WeightMatrixType;
 import com.diplom.routeoptimizer.services.optimizer.DataModel;
 import com.diplom.routeoptimizer.services.optimizer.OptimalRouteFinder;
 import com.diplom.routeoptimizer.services.ortools.OrtoolsSolver;
@@ -66,7 +65,7 @@ public class OptimalRouteFinderImpl implements OptimalRouteFinder {
     private DataModel.DataModelBuilder initDataModel(RoutingProblemData problem) throws InvalidNumberOfAddressesException {
         List<Location> routeLocations = getRouteLocations(problem.getAddresses());
         ResponseEntity<RouteDetailsResponse> response = routeDetails(new RouteDetailsRequest(routeLocations));
-        Long[][] weightsMatrix = matrixParser.parseWeights(response, WeightMatrixType.DISTANCES);
+        Long[][] weightsMatrix = matrixParser.parseWeights(response, problem.getMatrixType());
         return DataModel.builder()
                 .addresses(problem.getAddresses())
                 .locations(routeLocations)

@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.services.geocode.geocoder.impl;
 
-import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.services.geocode.Location;
 import com.diplom.routeoptimizer.requests.HttpClient;
 import com.diplom.routeoptimizer.services.geocode.address.Addressable;
 import com.diplom.routeoptimizer.services.geocode.parser.LocationParser;

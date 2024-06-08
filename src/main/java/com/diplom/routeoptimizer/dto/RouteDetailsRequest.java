@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.dto;
 
-import com.diplom.routeoptimizer.model.Location;
+import com.diplom.routeoptimizer.services.geocode.Location;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

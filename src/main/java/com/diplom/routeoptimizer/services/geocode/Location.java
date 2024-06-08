@@ -1,10 +1,14 @@
-package com.diplom.routeoptimizer.model;
+package com.diplom.routeoptimizer.services.geocode;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+
 @AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class Location {
     private double lat;
     private double lon;
