@@ -14,5 +14,4 @@ public interface HttpClient {
             throws IOException, InterruptedException {
         return doGet(url + "?" + ParameterStringBuilder.getParamsString(queryParams));
     }
-
 }

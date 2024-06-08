@@ -1,10 +1,10 @@
 package com.diplom.routeoptimizer.exceptions;
 
-import com.diplom.routeoptimizer.services.geocoding.address.Addressable;
+import com.diplom.routeoptimizer.services.geocode.address.Addressable;
 
 import java.io.IOException;
 
-public class EncodingAddressException extends IOException {
+public class EncodingAddressException extends RuntimeException {
 
     private static final String message = "Something went wrong while trying encode address: ";
 

@@ -1,6 +1,6 @@
 package com.diplom.routeoptimizer.model;
 
-import com.diplom.routeoptimizer.services.geocoding.address.Addressable;
+import com.diplom.routeoptimizer.services.geocode.address.Addressable;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
