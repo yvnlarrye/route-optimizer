@@ -3,6 +3,7 @@ package com.diplom.routeoptimizer.services;
 import com.diplom.routeoptimizer.dto.vrp.SolutionDTO;
 import com.diplom.routeoptimizer.dto.vrp.VrpSolution;
 import com.diplom.routeoptimizer.exceptions.IncorrectSolutionFormatException;
+import com.diplom.routeoptimizer.exceptions.SolutionNotFoundException;
 import com.diplom.routeoptimizer.model.Solution;
 import com.diplom.routeoptimizer.model.User;
 import com.diplom.routeoptimizer.repository.SolutionRepository;
@@ -47,12 +48,17 @@ public class SolutionService {
         return repository.save(solution);
     }
 
-    public void removeBYId(Long id) {
-        repository.deleteById(id);
+    public void deleteById(Long id) {
+        repository.delete(getSolutionById(id));
     }
 
     public List<Solution> getUserSolutions(Long userId) {
         User currentUser = userService.getById(userId);
         return repository.findAllByUser(currentUser);
+    }
+
+    public Solution getSolutionById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new SolutionNotFoundException("Cannot find solution with id=" + id));
     }
 }

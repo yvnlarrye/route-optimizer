@@ -5,8 +5,10 @@ import com.diplom.routeoptimizer.dto.RouteDetailsResponse;
 import com.diplom.routeoptimizer.dto.vrp.CVRPData;
 import com.diplom.routeoptimizer.dto.vrp.RoutingProblemData;
 import com.diplom.routeoptimizer.dto.vrp.TSPData;
+import com.diplom.routeoptimizer.dto.vrp.VrpSolution;
 import com.diplom.routeoptimizer.exceptions.EncodingAddressException;
 import com.diplom.routeoptimizer.exceptions.InvalidNumberOfAddressesException;
+import com.diplom.routeoptimizer.services.optimizer.ProblemType;
 import com.diplom.routeoptimizer.services.geocode.Location;
 import com.diplom.routeoptimizer.services.geocode.address.Addressable;
 import com.diplom.routeoptimizer.services.geocode.geocoder.Geocoder;
@@ -45,7 +47,10 @@ public class OptimalRouteFinderImpl implements OptimalRouteFinder {
                 .depot(cvrp.getDepot())
                 .build();
 
-        return ResponseEntity.ok(OrtoolsSolver.solveProblem(dataModel));
+        VrpSolution solution = OrtoolsSolver.solveProblem(dataModel);
+        solution.setProblemType(ProblemType.CVRP);
+
+        return ResponseEntity.ok(solution);
     }
 
     @Override
@@ -59,7 +64,10 @@ public class OptimalRouteFinderImpl implements OptimalRouteFinder {
                 .depot(tsp.getDepot())
                 .build();
 
-        return ResponseEntity.ok(OrtoolsSolver.solveProblem(dataModel));
+        VrpSolution solution = OrtoolsSolver.solveProblem(dataModel);
+        solution.setProblemType(ProblemType.TSP);
+
+        return ResponseEntity.ok(solution);
     }
 
     private DataModel.DataModelBuilder initDataModel(RoutingProblemData problem) throws InvalidNumberOfAddressesException {
