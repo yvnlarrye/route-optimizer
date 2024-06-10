@@ -9,6 +9,8 @@ import com.google.ortools.Loader;
 import com.google.ortools.constraintsolver.*;
 import com.google.protobuf.Duration;
 
+import java.util.Arrays;
+
 public final class OrtoolsSolver {
 
     private static VrpSolution formatSolution(
@@ -21,14 +23,16 @@ public final class OrtoolsSolver {
             Route route = new Route();
             long index = routing.start(i);
             long routeDistance = 0;
-            int routeLoad = 0;
+            int routeLoad = Arrays.stream(data.getDemands()).sum();
 
             while (!routing.isEnd(index)) {
                 int nodeIndex = manager.indexToNode(index);
-                routeLoad += data.getDemands()[nodeIndex];
+                routeLoad -= data.getDemands()[nodeIndex];
 
                 Node node = Node.builder()
                         .id(nodeIndex)
+                        .demand(data.getDemands()[nodeIndex])
+                        .supplied(data.getDemands()[nodeIndex])
                         .load(routeLoad)
                         .address(data.getAddresses().get(nodeIndex))
                         .location(data.getLocations().get(nodeIndex))

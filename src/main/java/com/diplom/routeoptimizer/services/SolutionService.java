@@ -11,21 +11,36 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class SolutionService {
     private final SolutionRepository repository;
     private final UserService userService;
 
-    public Solution create(SolutionDTO solution) {
+    public VrpSolution readSolutionFromDTO(SolutionDTO solution) {
         try {
-            System.out.println(solution.getSolutionJson());
-            new ObjectMapper().readValue(solution.getSolutionJson(), VrpSolution.class);
-            User currentUser = userService.getCurrentUser();
-            return create(new Solution(solution.getSolutionJson(), currentUser));
+            return new ObjectMapper().
+                    readValue(solution.getSolutionJson(), VrpSolution.class);
         } catch (JsonProcessingException e) {
             throw new IncorrectSolutionFormatException("Incorrect json format of solution", e);
         }
+    }
+
+    public Solution create(SolutionDTO solutionDTO) {
+
+        readSolutionFromDTO(solutionDTO);
+
+        Solution solution = new Solution();
+        solution.setSolutionJson(solutionDTO.getSolutionJson());
+        solution.setCreatedAt(new Date());
+        solution.setName(solutionDTO.getName());
+        solution.setUser(userService.getCurrentUser());
+
+        return create(solution);
+
     }
 
     private Solution create(Solution solution) {
@@ -36,4 +51,8 @@ public class SolutionService {
         repository.deleteById(id);
     }
 
+    public List<Solution> getUserSolutions(Long userId) {
+        User currentUser = userService.getById(userId);
+        return repository.findAllByUser(currentUser);
+    }
 }

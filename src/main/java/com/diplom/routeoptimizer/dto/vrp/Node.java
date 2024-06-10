@@ -16,4 +16,6 @@ public class Node {
     private Addressable address;
     private Location location;
     private int load;
+    private int supplied;
+    private int demand;
 }

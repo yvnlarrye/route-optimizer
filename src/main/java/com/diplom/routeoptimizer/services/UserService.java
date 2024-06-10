@@ -26,6 +26,11 @@ public class UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
     }
 
+    public User getById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+    }
+
     public UserDetailsService userDetailsService() {
         return this::getByUsername;
     }

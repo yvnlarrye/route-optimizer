@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "solutions")
@@ -13,15 +15,15 @@ public class Solution {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String name;
+
+    @Column(name = "created_at")
+    private Date createdAt;
+
     @Column(name = "solution_json", columnDefinition = "TEXT")
     private String solutionJson;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    public Solution(String solutionJson, User user) {
-        this.solutionJson = solutionJson;
-        this.user = user;
-    }
 }
