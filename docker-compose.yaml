@@ -1,5 +1,8 @@
+version: '3.8'
+
 services:
-  db_pg_15:
+  postgres_db:
+    container_name: postgres_db
     image: postgres:15-alpine
     restart: unless-stopped
     environment:
@@ -7,4 +10,29 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - 5432:5432
+      - "5432:5432"
+
+  server-app:
+    container_name: server-app
+    image: yvnlarrye/route-optimizer-app:latest
+    restart: unless-stopped
+    depends_on:
+      - postgres_db
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres_db/route_optimizer
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
+    ports:
+      - "8081:8081"
+
+  client-app:
+    container_name: client-app
+    image: yvnlarrye/route-optimizer-ui:latest
+    restart: unless-stopped
+    ports:
+      - "80:8080"
+    environment:
+      - APP_URL=http://localhost:8081
+    depends_on:
+      - server-app
