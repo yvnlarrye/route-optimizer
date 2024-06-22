@@ -94,7 +94,7 @@ public final class OrtoolsSolver {
                         .toBuilder()
                         .setFirstSolutionStrategy(FirstSolutionStrategy.Value.PATH_CHEAPEST_ARC)
                         .setLocalSearchMetaheuristic(LocalSearchMetaheuristic.Value.GUIDED_LOCAL_SEARCH)
-                        .setTimeLimit(Duration.newBuilder().setSeconds(3).build())
+                        .setTimeLimit(Duration.newBuilder().setSeconds(10).build())
                         .build();
 
         Assignment solution = routing.solveWithParameters(searchParameters);
